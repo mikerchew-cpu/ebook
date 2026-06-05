@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPT Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+  .toolbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 48px;
+    background: rgba(10,10,10,0.95); border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    z-index: 1000; backdrop-filter: blur(10px);
+  }
+  .toolbar button {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; padding: 6px 16px; border-radius: 6px; cursor: pointer;
+    font-size: 14px; transition: background 0.2s;
+  }
+  .toolbar button:hover { background: rgba(255,255,255,0.2); }
+  .toolbar button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .page-info { font-size: 14px; color: rgba(255,255,255,0.7); min-width: 80px; text-align: center; }
+  .stage {
+    margin-top: 60px; width: 90vw; max-width: 1280px;
+    aspect-ratio: 16/9; overflow: hidden;
+    border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    background: #111; position: relative;
+  }
+  .slide-frame {
+    width: 1280px; height: 720px;
+    transform-origin: top left;
+    position: absolute; top: 0; left: 0;
+    border: none;
+  }
+  .nav-hint {
+    position: fixed; bottom: 12px;
+    color: rgba(255,255,255,0.25); font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button id="btn-prev" onclick="nav(-1)">Prev</button>
+  <span class="page-info" id="page-info">1 / 12</span>
+  <button id="btn-next" onclick="nav(1)">Next</button>
+</div>
+<div class="stage" id="stage">
+<iframe class="slide-frame" id="slide-0" style="display:block" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Cover · Mastering Roman Carbonara&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --bg-warm: #ede2d0; --ink-primary: #2a1810; --ink-deep: #1f1410;
+    --ink-secondary: #4a3a30; --ink-label: #8b5a3c; --accent: #c1502e;
+    --yolk: #f0c050; --terra: #c45a3a; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(240,192,80,0.10) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(196,90,58,0.08) 0%, transparent 42%),
+    radial-gradient(circle at 50% 50%, rgba(42,24,16,0.015) 0%, transparent 60%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 80px;z-index:2;display:grid;grid-template-columns:1fr 1.5fr;gap:60px}
+  .col-left{display:flex;flex-direction:column;padding-top:0}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:36px}
+  .headline{font-family:var(--display-font);font-size:62px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-0.015em;padding-right:2px}
+  .byline{margin-top:44px;display:flex;align-items:center;gap:14px;font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.18em;text-transform:uppercase;font-weight:500}
+  .byline .dash{width:18px;height:1px;background:var(--ink-secondary);opacity:0.5}
+  .col-right{padding-top:90px;display:flex;flex-direction:column;position:relative}
+  .essay{font-family:var(--body-font);font-size:17px;line-height:1.78;color:var(--ink-primary);text-align:left;hyphens:auto;font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;;max-width:560px}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-weight:400;font-size:18px}
+  .pull-quote{margin-top:34px;padding-left:18px;border-left:1.5px solid var(--accent);
+    font-family:var(--italic-font);font-style:italic;font-size:17px;line-height:1.55;color:var(--ink-secondary);max-width:480px;letter-spacing:0.005em}
+  .meta-row{margin-top:38px;display:flex;align-items:center;gap:16px;font-family:var(--label-font);font-size:10.5px;color:var(--ink-deep);letter-spacing:0.22em;text-transform:uppercase;font-weight:600}
+  .meta-row .sep{width:4px;height:4px;border-radius:50%;background:var(--ink-label);opacity:0.6}
+  .meta-row .cta{color:var(--accent);display:inline-flex;align-items:center;gap:8px}
+  .meta-row .cta .arrow{font-family:var(--display-font);font-style:normal;font-size:13px;letter-spacing:0}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+  .visual-mark{position:absolute;top:160px;right:80px;width:340px;height:340px;z-index:1;opacity:0.85;display:none}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;ROMAN CUISINE&lt;/span&gt;&lt;span&gt;PASTA&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;col-left&quot;&gt;
+      &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;label&quot;&gt;Field Guide · Roman Cuisine&lt;/div&gt;
+      &lt;h1 class=&quot;headline&quot;&gt;Mastering the Art of &lt;em&gt;Authentic&lt;/em&gt; Roman Carbonara&lt;/h1&gt;
+      &lt;div class=&quot;byline&quot;&gt;&lt;span class=&quot;dash&quot;&gt;&lt;/span&gt;&lt;span&gt;A Technical Manual&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-right&quot;&gt;
+      &lt;p class=&quot;essay&quot;&gt;The ultimate guide to achieving &lt;em&gt;perfect emulsion&lt;/em&gt;, rich flavor, and culinary gold—without a drop of cream.&lt;/p&gt;
+      &lt;div class=&quot;pull-quote&quot;&gt;&amp;ldquo; Simplicity is the ultimate sophistication. The Romans knew this with five ingredients and a wooden spoon. &amp;rdquo;&lt;/div&gt;
+      &lt;div class=&quot;meta-row&quot;&gt;
+        &lt;span&gt;12 Lessons&lt;/span&gt;
+        &lt;span class=&quot;sep&quot;&gt;&lt;/span&gt;
+        &lt;span&gt;5 Ingredients&lt;/span&gt;
+        &lt;span class=&quot;sep&quot;&gt;&lt;/span&gt;
+        &lt;span class=&quot;cta&quot;&gt;Begin &lt;span class=&quot;arrow&quot;&gt;→&lt;/span&gt;&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Masterclass · Italian Pasta&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 01&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-1" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Section · The Five Sacred Elements&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 80px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:36px}
+  .part-num{font-family:var(--italic-font);font-style:italic;font-size:120px;font-weight:400;line-height:1;color:var(--accent);letter-spacing:-0.02em;margin-bottom:24px}
+  .headline{font-family:var(--display-font);font-size:84px;font-weight:500;color:var(--ink-deep);line-height:1.02;letter-spacing:-0.025em;max-width:900px;margin-bottom:32px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:18px;line-height:1.72;color:var(--ink-secondary);max-width:680px}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:19px}
+  .formula{margin-top:48px;padding:24px 28px;background:rgba(193,80,46,0.06);border-left:2px solid var(--accent);
+    font-family:&#x27;Source Serif 4&#x27;,serif;font-size:20px;line-height:1.6;color:var(--ink-primary);letter-spacing:0.01em}
+  .formula em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:22px;padding:0 2px}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;PART ONE&lt;/span&gt;&lt;span&gt;INGREDIENTS&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;label&quot;&gt;Part I · The Foundations&lt;/div&gt;
+    &lt;div class=&quot;part-num&quot;&gt;01&lt;/div&gt;
+    &lt;h1 class=&quot;headline&quot;&gt;The &lt;em&gt;Five&lt;/em&gt; Sacred Elements&lt;/h1&gt;
+    &lt;p class=&quot;essay&quot;&gt;Traditional Roman cooking relies on simplicity and technique over complicated ingredients. Carbonara is constructed using only &lt;em&gt;five&lt;/em&gt; high-quality elements—nothing more, nothing less.&lt;/p&gt;
+    &lt;div class=&quot;formula&quot;&gt;
+      &lt;em&gt;Pasta&lt;/em&gt; + &lt;em&gt;Guanciale&lt;/em&gt; + &lt;em&gt;Yolks&lt;/em&gt; + &lt;em&gt;Pecorino&lt;/em&gt; + &lt;em&gt;Pepper&lt;/em&gt; &amp;nbsp;=&amp;nbsp; &lt;em&gt;Carbonara&lt;/em&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Part I · Foundations&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 02&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-2" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Content · The Ingredient Matrix&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .headline{font-family:var(--display-font);font-size:48px;font-weight:500;color:var(--ink-deep);line-height:1.05;letter-spacing:-0.025em;max-width:900px;margin-bottom:8px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .sub{font-family:var(--body-font);font-size:15px;color:var(--ink-secondary);font-style:italic;margin-bottom:34px;letter-spacing:0.005em}
+  .table-wrap{margin-top:8px;display:grid;grid-template-columns:140px 1fr 1fr 1.2fr;border-top:1.5px solid var(--ink-deep);border-bottom:1.5px solid var(--ink-deep)}
+  .th{font-family:var(--label-font);font-size:9.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;padding:12px 14px 10px 0;border-bottom:0.5px solid var(--rule);text-align:left}
+  .row{display:contents}
+  .row &gt; *{padding:14px 14px 14px 0;border-bottom:0.5px solid var(--rule);font-size:14px;line-height:1.5;color:var(--ink-primary);vertical-align:top}
+  .row:last-child &gt; *{border-bottom:none}
+  .row .name{font-family:var(--display-font);font-weight:600;font-size:14.5px;color:var(--ink-deep);letter-spacing:0.01em}
+  .row .prime{font-family:var(--italic-font);font-style:italic;font-size:15.5px;color:var(--ink-primary);font-weight:400}
+  .row .alt{font-family:var(--body-font);color:var(--ink-secondary);font-size:13.5px}
+  .row .role{font-family:var(--body-font);color:var(--ink-secondary);font-size:13.5px;line-height:1.55}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;PART ONE&lt;/span&gt;&lt;span&gt;INGREDIENTS&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;label&quot;&gt;The Pantry · Five Roles&lt;/div&gt;
+    &lt;h1 class=&quot;headline&quot;&gt;The Ingredient &lt;em&gt;Matrix&lt;/em&gt;&lt;/h1&gt;
+    &lt;p class=&quot;sub&quot;&gt;Five elements, five roles — and why substitutes only sometimes work.&lt;/p&gt;
+    &lt;div class=&quot;table-wrap&quot;&gt;
+      &lt;div class=&quot;th&quot;&gt;Element&lt;/div&gt;
+      &lt;div class=&quot;th&quot;&gt;Authentic&lt;/div&gt;
+      &lt;div class=&quot;th&quot;&gt;Acceptable Alt.&lt;/div&gt;
+      &lt;div class=&quot;th&quot;&gt;Role in the Dish&lt;/div&gt;
+      &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;name&quot;&gt;Pork&lt;/div&gt;
+        &lt;div class=&quot;prime&quot;&gt;Guanciale&lt;/div&gt;
+        &lt;div class=&quot;alt&quot;&gt;Pancetta (less ideal)&lt;/div&gt;
+        &lt;div class=&quot;role&quot;&gt;Renders the savory, peppery fat base that carries the sauce.&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;name&quot;&gt;Cheese&lt;/div&gt;
+        &lt;div class=&quot;prime&quot;&gt;Pecorino Romano&lt;/div&gt;
+        &lt;div class=&quot;alt&quot;&gt;Parmigiano-Reggiano&lt;/div&gt;
+        &lt;div class=&quot;role&quot;&gt;Thickens, salts, and adds the sharp backbone flavor.&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;name&quot;&gt;Eggs&lt;/div&gt;
+        &lt;div class=&quot;prime&quot;&gt;Fresh Farm Yolks&lt;/div&gt;
+        &lt;div class=&quot;alt&quot;&gt;Whole eggs + extra yolks&lt;/div&gt;
+        &lt;div class=&quot;role&quot;&gt;Natural emulsifier — binds fat and water into silk.&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;name&quot;&gt;Pasta&lt;/div&gt;
+        &lt;div class=&quot;prime&quot;&gt;Spaghetti or Rigatoni&lt;/div&gt;
+        &lt;div class=&quot;alt&quot;&gt;Bucatini, tonnarelli&lt;/div&gt;
+        &lt;div class=&quot;role&quot;&gt;Carries starch; the hidden fifth ingredient.&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;name&quot;&gt;Pepper&lt;/div&gt;
+        &lt;div class=&quot;prime&quot;&gt;Tellicherry, cracked fresh&lt;/div&gt;
+        &lt;div class=&quot;alt&quot;&gt;Coarse black pepper&lt;/div&gt;
+        &lt;div class=&quot;role&quot;&gt;Cuts through rich fat with gentle heat.&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;The Pantry&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 03&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-3" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Content · The Soul of the Dish&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --yolk: #f0c050; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(240,192,80,0.08) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2;display:grid;grid-template-columns:1fr 1.1fr;gap:60px}
+  .col-left{display:flex;flex-direction:column}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:30px}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:32px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:16px;line-height:1.72;color:var(--ink-primary);max-width:520px;margin-bottom:22px}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:17px}
+  .essay strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep)}
+  .pull-quote{margin-top:8px;padding:18px 0 18px 20px;border-left:1.5px solid var(--accent);
+    font-family:var(--italic-font);font-style:italic;font-size:17px;line-height:1.55;color:var(--ink-secondary);max-width:500px;letter-spacing:0.005em}
+  .col-right{display:flex;align-items:center;justify-content:center;position:relative}
+  .yolk-stage{position:relative;width:360px;height:360px;display:flex;align-items:center;justify-content:center}
+  .yolk-circle{width:280px;height:280px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #f7d978 0%, #f0c050 38%, #d49a30 75%, #a86f1e 100%);
+    box-shadow:0 30px 60px rgba(168,111,30,0.18), inset 0 -8px 24px rgba(168,111,30,0.18), inset 0 8px 24px rgba(255,255,255,0.25);
+    position:relative}
+  .yolk-highlight{position:absolute;top:50px;left:60px;width:80px;height:50px;border-radius:50%;
+    background:radial-gradient(ellipse, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.0) 70%);filter:blur(2px)}
+  .yolk-label{position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;white-space:nowrap}
+  .yolk-caption{position:absolute;top:-46px;left:50%;transform:translateX(-50%);font-family:var(--italic-font);font-style:italic;font-size:15px;color:var(--ink-secondary);white-space:nowrap}
+  .yolk-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--italic-font);font-style:italic;font-size:36px;color:rgba(42,24,16,0.7);font-weight:400}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;SPOTLIGHT&lt;/span&gt;&lt;span&gt;EGGS&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;col-left&quot;&gt;
+      &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;label&quot;&gt;Ingredient Spotlight · The Emulsifier&lt;/div&gt;
+      &lt;h1 class=&quot;headline&quot;&gt;The &lt;em&gt;Soul&lt;/em&gt; of the Dish: Eggs&lt;/h1&gt;
+      &lt;p class=&quot;essay&quot;&gt;&lt;strong&gt;Why only yolks matter.&lt;/strong&gt; Velvety creaminess is strictly achieved through the natural emulsion of yolk, hot starch water, and rendered guanciale fat. The lecithin in yolks is the magic.&lt;/p&gt;
+      &lt;p class=&quot;essay&quot;&gt;&lt;strong&gt;The problem with cream.&lt;/strong&gt; Cream dilutes the deep umami of guanciale and prevents proper starch binding. It masks, rather than reveals, what good ingredients already are.&lt;/p&gt;
+      &lt;div class=&quot;pull-quote&quot;&gt;&amp;ldquo; When the egg hits the warm pasta, it doesn&#x27;t cook — it &lt;em&gt;melts&lt;/em&gt;. That&#x27;s the difference. &amp;rdquo;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-right&quot;&gt;
+      &lt;div class=&quot;yolk-stage&quot;&gt;
+        &lt;div class=&quot;yolk-caption&quot;&gt;— fresh farm yolk —&lt;/div&gt;
+        &lt;div class=&quot;yolk-circle&quot;&gt;
+          &lt;div class=&quot;yolk-highlight&quot;&gt;&lt;/div&gt;
+          &lt;div class=&quot;yolk-num&quot;&gt;100%&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;yolk-label&quot;&gt;The Emulsifier&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Spotlight · Eggs&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 04&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-4" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Content · The Three Golden Rules&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:8px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .sub{font-family:var(--body-font);font-size:16px;color:var(--ink-secondary);font-style:italic;margin-bottom:42px;letter-spacing:0.005em}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1.5px solid var(--ink-deep)}
+  .tile{padding:36px 24px 36px 0;border-right:0.5px solid var(--rule)}
+  .tile:last-child{border-right:none}
+  .tile .num{font-family:var(--italic-font);font-style:italic;font-size:54px;color:var(--accent);line-height:1;letter-spacing:-0.02em;margin-bottom:18px;display:block}
+  .tile .icon{width:36px;height:36px;margin-bottom:18px;color:var(--ink-deep)}
+  .tile h3{font-family:var(--display-font);font-size:21px;font-weight:600;color:var(--ink-deep);line-height:1.18;letter-spacing:-0.01em;margin-bottom:14px}
+  .tile h3 em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .tile p{font-family:var(--body-font);font-size:14.5px;line-height:1.62;color:var(--ink-secondary)}
+  .tile p em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:15px}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;PHILOSOPHY&lt;/span&gt;&lt;span&gt;THREE LAWS&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;label&quot;&gt;The Guiding Philosophy · Non-Negotiable&lt;/div&gt;
+    &lt;h1 class=&quot;headline&quot;&gt;The Three &lt;em&gt;Golden&lt;/em&gt; Rules&lt;/h1&gt;
+    &lt;p class=&quot;sub&quot;&gt;If you break one, you&#x27;ll scramble the eggs, mask the pork, or split the sauce.&lt;/p&gt;
+    &lt;div class=&quot;grid&quot;&gt;
+      &lt;div class=&quot;tile&quot;&gt;
+        &lt;span class=&quot;num&quot;&gt;I.&lt;/span&gt;
+        &lt;svg class=&quot;icon&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;line x1=&quot;4.93&quot; y1=&quot;4.93&quot; x2=&quot;19.07&quot; y2=&quot;19.07&quot;/&gt;&lt;/svg&gt;
+        &lt;h3&gt;Absolute &lt;em&gt;No-Cream&lt;/em&gt;&lt;/h3&gt;
+        &lt;p&gt;Never mask the natural pork fat and sharp Pecorino with cream. Trust food chemistry — yolks, fat, and starch &lt;em&gt;are&lt;/em&gt; the sauce.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;tile&quot;&gt;
+        &lt;span class=&quot;num&quot;&gt;II.&lt;/span&gt;
+        &lt;svg class=&quot;icon&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot;&gt;&lt;path d=&quot;M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z&quot;/&gt;&lt;/svg&gt;
+        &lt;h3&gt;Save Your &lt;em&gt;Water&lt;/em&gt;&lt;/h3&gt;
+        &lt;p&gt;Pasta starch water is the thermal stabilizer that prevents scrambled eggs. A ladleful rescues any sauce that&#x27;s about to break.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;tile&quot;&gt;
+        &lt;span class=&quot;num&quot;&gt;III.&lt;/span&gt;
+        &lt;svg class=&quot;icon&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;line x1=&quot;8&quot; y1=&quot;8&quot; x2=&quot;16&quot; y2=&quot;16&quot;/&gt;&lt;line x1=&quot;16&quot; y1=&quot;8&quot; x2=&quot;8&quot; y2=&quot;16&quot;/&gt;&lt;/svg&gt;
+        &lt;h3&gt;Execute &lt;em&gt;Off-Heat&lt;/em&gt;&lt;/h3&gt;
+        &lt;p&gt;Direct burner heat ruins the emulsion. Combine yolk paste and pasta completely off the burner, using residual pan warmth.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Philosophy · Three Laws&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 05&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-5" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Section · The Cooking Process&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 80px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:36px}
+  .part-num{font-family:var(--italic-font);font-style:italic;font-size:120px;font-weight:400;line-height:1;color:var(--accent);letter-spacing:-0.02em;margin-bottom:24px}
+  .headline{font-family:var(--display-font);font-size:84px;font-weight:500;color:var(--ink-deep);line-height:1.02;letter-spacing:-0.025em;max-width:900px;margin-bottom:32px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:18px;line-height:1.72;color:var(--ink-secondary);max-width:680px}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:19px}
+  .step-row{margin-top:48px;display:flex;align-items:center;gap:0}
+  .step-mini{display:flex;align-items:center;gap:14px;font-family:var(--label-font);font-size:11px;color:var(--ink-label);letter-spacing:0.22em;text-transform:uppercase;font-weight:600}
+  .step-mini .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .step-mini .num{font-family:var(--display-font);font-style:italic;font-size:16px;color:var(--ink-primary);text-transform:none;letter-spacing:0;font-weight:500}
+  .step-mini .sep{width:34px;height:1px;background:var(--ink-secondary);opacity:0.4}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;PART TWO&lt;/span&gt;&lt;span&gt;EXECUTION&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;label&quot;&gt;Part II · The Process&lt;/div&gt;
+    &lt;div class=&quot;part-num&quot;&gt;02&lt;/div&gt;
+    &lt;h1 class=&quot;headline&quot;&gt;The &lt;em&gt;Cooking&lt;/em&gt; Process&lt;/h1&gt;
+    &lt;p class=&quot;essay&quot;&gt;A step-by-step masterclass on execution — transforming five basic elements into a flawless culinary masterpiece with &lt;em&gt;perfect texture&lt;/em&gt;.&lt;/p&gt;
+    &lt;div class=&quot;step-row&quot;&gt;
+      &lt;div class=&quot;step-mini&quot;&gt;&lt;span class=&quot;dot&quot;&gt;&lt;/span&gt;&lt;span class=&quot;num&quot;&gt;i.&lt;/span&gt; Render&lt;/div&gt;
+      &lt;div class=&quot;step-mini&quot;&gt;&lt;span class=&quot;sep&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;step-mini&quot;&gt;&lt;span class=&quot;dot&quot;&gt;&lt;/span&gt;&lt;span class=&quot;num&quot;&gt;ii.&lt;/span&gt; Boil&lt;/div&gt;
+      &lt;div class=&quot;step-mini&quot;&gt;&lt;span class=&quot;sep&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;step-mini&quot;&gt;&lt;span class=&quot;dot&quot;&gt;&lt;/span&gt;&lt;span class=&quot;num&quot;&gt;iii.&lt;/span&gt; Whisk&lt;/div&gt;
+      &lt;div class=&quot;step-mini&quot;&gt;&lt;span class=&quot;sep&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;step-mini&quot;&gt;&lt;span class=&quot;dot&quot;&gt;&lt;/span&gt;&lt;span class=&quot;num&quot;&gt;iv.&lt;/span&gt; Emulsify&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Part II · The Process&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 06&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-6" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Content · Step 1: Slow Rendering&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2;display:grid;grid-template-columns:1.1fr 1fr;gap:60px}
+  .col-left{display:flex;flex-direction:column}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .step-label{display:inline-flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .step-label .roman{font-family:var(--italic-font);font-style:italic;font-size:32px;color:var(--accent);font-weight:400;line-height:1}
+  .step-label .name{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:30px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:15.5px;line-height:1.7;color:var(--ink-primary);margin-bottom:14px;max-width:540px}
+  .essay strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep)}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent)}
+  .checklist{margin-top:20px;border-top:0.5px solid var(--rule)}
+  .check{display:grid;grid-template-columns:24px 1fr;gap:14px;padding:14px 0;border-bottom:0.5px solid var(--rule);align-items:start}
+  .check .mark{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:18px;line-height:1.2;margin-top:2px}
+  .check .text strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep);font-size:15px;display:block;margin-bottom:3px;letter-spacing:-0.005em}
+  .check .text span{font-family:var(--body-font);font-size:14px;color:var(--ink-secondary);line-height:1.55}
+  .col-right{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;position:relative;padding-top:30px}
+  .visual{position:relative;width:100%;max-width:440px;height:380px;border-radius:2px;overflow:hidden;background:linear-gradient(135deg, #2a1810 0%, #4a3020 50%, #2a1810 100%);box-shadow:0 30px 60px rgba(42,24,16,0.18)}
+  .pan-shape{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:320px;height:200px;border-radius:50%;background:radial-gradient(ellipse at center, #4a3a30 0%, #2a1810 75%, #1f1410 100%);box-shadow:inset 0 0 60px rgba(0,0,0,0.6), inset 0 -8px 24px rgba(255,255,255,0.05)}
+  .pan-bacon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg);width:60%;height:24px;background:linear-gradient(90deg, #c45a3a 0%, #e08560 25%, #c45a3a 50%, #8b3a1f 100%);border-radius:6px;box-shadow:0 4px 10px rgba(0,0,0,0.4)}
+  .pan-bacon.b2{transform:translate(-50%,-30%) rotate(8deg);width:55%;height:22px;background:linear-gradient(90deg, #8b3a1f 0%, #c45a3a 50%, #6b2a14 100%)}
+  .pan-bacon.b3{transform:translate(-50%,10%) rotate(-5deg);width:65%;height:26px;background:linear-gradient(90deg, #c45a3a 0%, #d97455 30%, #a84a2a 70%, #8b3a1f 100%)}
+  .pan-shimmer{position:absolute;left:50%;top:35%;transform:translate(-50%,-50%);width:80%;height:8px;background:radial-gradient(ellipse, rgba(255,200,120,0.5) 0%, transparent 70%);filter:blur(3px)}
+  .visual-caption{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-family:var(--label-font);font-size:10.5px;color:rgba(243,235,222,0.7);letter-spacing:0.28em;text-transform:uppercase;font-weight:500}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;STEP I&lt;/span&gt;&lt;span&gt;RENDERING&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;col-left&quot;&gt;
+      &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;label&quot;&gt;Foundation of Flavor&lt;/div&gt;
+      &lt;div class=&quot;step-label&quot;&gt;&lt;span class=&quot;roman&quot;&gt;i.&lt;/span&gt;&lt;span class=&quot;name&quot;&gt;The First Step&lt;/span&gt;&lt;/div&gt;
+      &lt;h1 class=&quot;headline&quot;&gt;Slow &lt;em&gt;Rendering&lt;/em&gt;&lt;/h1&gt;
+      &lt;p class=&quot;essay&quot;&gt;Guanciale releases its soul through patience. &lt;strong&gt;Low and slow&lt;/strong&gt; is the only tempo that renders the fat &lt;em&gt;silky&lt;/em&gt; while crisping the meat golden.&lt;/p&gt;
+      &lt;div class=&quot;checklist&quot;&gt;
+        &lt;div class=&quot;check&quot;&gt;
+          &lt;div class=&quot;mark&quot;&gt;i.&lt;/div&gt;
+          &lt;div class=&quot;text&quot;&gt;&lt;strong&gt;Cut chunkily&lt;/strong&gt;&lt;span&gt;Slice guanciale into 1cm thick batons so they stay tender inside when crisp.&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;check&quot;&gt;
+          &lt;div class=&quot;mark&quot;&gt;ii.&lt;/div&gt;
+          &lt;div class=&quot;text&quot;&gt;&lt;strong&gt;Start cold&lt;/strong&gt;&lt;span&gt;Place pork into a cold pan with no extra oil; let the fat render out slowly.&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;check&quot;&gt;
+          &lt;div class=&quot;mark&quot;&gt;iii.&lt;/div&gt;
+          &lt;div class=&quot;text&quot;&gt;&lt;strong&gt;Slow sauté&lt;/strong&gt;&lt;span&gt;Cook on low-medium for 8–10 minutes until golden and crispy.&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;check&quot;&gt;
+          &lt;div class=&quot;mark&quot;&gt;iv.&lt;/div&gt;
+          &lt;div class=&quot;text&quot;&gt;&lt;strong&gt;Retain the fat&lt;/strong&gt;&lt;span&gt;Remove the meat, but leave the rendered liquid fat base in the pan.&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-right&quot;&gt;
+      &lt;div class=&quot;visual&quot;&gt;
+        &lt;div class=&quot;pan-shape&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;pan-shimmer&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;pan-bacon b1&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;pan-bacon b2&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;pan-bacon b3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;visual-caption&quot;&gt;— guanciale rendering in cast iron —&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Step I · Rendering&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 07&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-7" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Content · Step 2: Boiling Pasta&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2;display:grid;grid-template-columns:1fr 1.1fr;gap:0}
+  .col-left{position:relative;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;padding-right:30px;overflow:hidden}
+  .visual{position:relative;width:380px;height:480px;border-radius:2px;overflow:hidden;background:linear-gradient(180deg, #1a1410 0%, #2a1810 50%, #0f0a05 100%);box-shadow:0 30px 60px rgba(0,0,0,0.25)}
+  .water-bubbles{position:absolute;inset:0;background-image:radial-gradient(circle at 25% 30%, rgba(255,255,255,0.10) 0%, transparent 8%), radial-gradient(circle at 70% 50%, rgba(255,255,255,0.08) 0%, transparent 6%), radial-gradient(circle at 50% 75%, rgba(255,255,255,0.12) 0%, transparent 10%), radial-gradient(circle at 85% 25%, rgba(255,255,255,0.06) 0%, transparent 5%), radial-gradient(circle at 15% 65%, rgba(255,255,255,0.10) 0%, transparent 7%), radial-gradient(circle at 60% 35%, rgba(255,255,255,0.07) 0%, transparent 5%);animation:none}
+  .pasta-strand{position:absolute;left:50%;top:30%;width:6px;height:340px;background:linear-gradient(180deg, #f0c050 0%, #d49a30 100%);border-radius:3px;transform:translateX(-50%) rotate(8deg);box-shadow:0 0 8px rgba(240,192,80,0.3)}
+  .pasta-strand.s2{left:48%;transform:translateX(-50%) rotate(-6deg);width:5px;height:320px;background:linear-gradient(180deg, #e0a830 0%, #b8881a 100%)}
+  .pasta-strand.s3{left:52%;transform:translateX(-50%) rotate(15deg);width:6px;height:300px;background:linear-gradient(180deg, #f0c050 0%, #d49a30 100%)}
+  .pasta-strand.s4{left:46%;transform:translateX(-50%) rotate(-12deg);width:5px;height:310px;background:linear-gradient(180deg, #e8b838 0%, #c89220 100%)}
+  .pasta-strand.s5{left:54%;transform:translateX(-50%) rotate(4deg);width:5px;height:330px;background:linear-gradient(180deg, #f0c050 0%, #d49a30 100%)}
+  .visual-caption{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-family:var(--label-font);font-size:10.5px;color:rgba(243,235,222,0.7);letter-spacing:0.28em;text-transform:uppercase;font-weight:500}
+  .col-right{display:flex;flex-direction:column;padding-left:50px}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .step-label{display:inline-flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .step-label .roman{font-family:var(--italic-font);font-style:italic;font-size:32px;color:var(--accent);font-weight:400;line-height:1}
+  .step-label .name{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:30px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:15.5px;line-height:1.7;color:var(--ink-primary);margin-bottom:14px;max-width:540px}
+  .essay strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep)}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent)}
+  .stat-row{margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .stat{padding:18px 0;border-top:1.5px solid var(--ink-deep)}
+  .stat .num{font-family:var(--italic-font);font-style:italic;font-size:38px;color:var(--accent);line-height:1;letter-spacing:-0.02em;margin-bottom:6px}
+  .stat .name{font-family:var(--label-font);font-size:10px;color:var(--ink-label);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:8px}
+  .stat .desc{font-family:var(--body-font);font-size:13px;color:var(--ink-secondary);line-height:1.55}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;STEP II&lt;/span&gt;&lt;span&gt;BOILING&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;col-left&quot;&gt;
+      &lt;div class=&quot;visual&quot;&gt;
+        &lt;div class=&quot;water-bubbles&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;pasta-strand&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;pasta-strand s2&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;pasta-strand s3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;pasta-strand s4&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;pasta-strand s5&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;visual-caption&quot;&gt;— spaghetti in salted water —&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-right&quot;&gt;
+      &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;label&quot;&gt;Starch is Your Stabilizer&lt;/div&gt;
+      &lt;div class=&quot;step-label&quot;&gt;&lt;span class=&quot;roman&quot;&gt;ii.&lt;/span&gt;&lt;span class=&quot;name&quot;&gt;The Second Step&lt;/span&gt;&lt;/div&gt;
+      &lt;h1 class=&quot;headline&quot;&gt;Boiling &lt;em&gt;Pasta&lt;/em&gt;&lt;/h1&gt;
+      &lt;p class=&quot;essay&quot;&gt;&lt;strong&gt;Molto al dente.&lt;/strong&gt; Boil the spaghetti or rigatoni in heavily salted water — it should taste like the sea.&lt;/p&gt;
+      &lt;p class=&quot;essay&quot;&gt;&lt;strong&gt;Starch concentration tip.&lt;/strong&gt; Use slightly less water than the package suggests to concentrate the starches in the pot. Cloudy pasta water is &lt;em&gt;golden&lt;/em&gt;, not wasteful.&lt;/p&gt;
+      &lt;p class=&quot;essay&quot;&gt;&lt;strong&gt;Under-cook slightly.&lt;/strong&gt; Pull the pasta out &lt;em&gt;2 minutes&lt;/em&gt; before package directions so it can finish in the rendering pan.&lt;/p&gt;
+      &lt;div class=&quot;stat-row&quot;&gt;
+        &lt;div class=&quot;stat&quot;&gt;
+          &lt;div class=&quot;num&quot;&gt;2 min&lt;/div&gt;
+          &lt;div class=&quot;name&quot;&gt;Under-cook&lt;/div&gt;
+          &lt;div class=&quot;desc&quot;&gt;Pasta finishes in the pan with the rendered guanciale fat.&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;stat&quot;&gt;
+          &lt;div class=&quot;num&quot;&gt;1.0%&lt;/div&gt;
+          &lt;div class=&quot;name&quot;&gt;Water Salinity&lt;/div&gt;
+          &lt;div class=&quot;desc&quot;&gt;Heavily salted — the only seasoning the pasta will get.&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Step II · Boiling&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 08&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-8" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Content · Step 3: Whisking Pastella&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(240,192,80,0.10) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:60px}
+  .col-left{display:flex;flex-direction:column}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .step-label{display:inline-flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .step-label .roman{font-family:var(--italic-font);font-style:italic;font-size:32px;color:var(--accent);font-weight:400;line-height:1}
+  .step-label .name{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:30px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:15.5px;line-height:1.7;color:var(--ink-primary);margin-bottom:14px;max-width:520px}
+  .essay strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep)}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent)}
+  .col-right{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;position:relative;padding-top:30px}
+  .big-stat{margin-bottom:36px;padding-bottom:24px;border-bottom:1.5px solid var(--ink-deep);width:100%}
+  .big-stat .label{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.28em;text-transform:uppercase;margin-bottom:14px}
+  .big-stat .num{font-family:var(--italic-font);font-style:italic;font-size:88px;color:var(--accent);font-weight:400;line-height:1;letter-spacing:-0.025em;margin-bottom:8px}
+  .big-stat .sub{font-family:var(--display-font);font-size:18px;color:var(--ink-deep);font-weight:500;font-style:italic;letter-spacing:0.005em}
+  .meter-wrap{margin-bottom:30px;width:100%}
+  .meter-label{display:flex;justify-content:space-between;margin-bottom:8px}
+  .meter-label .name{font-family:var(--label-font);font-size:10px;color:var(--ink-label);font-weight:600;letter-spacing:0.22em;text-transform:uppercase}
+  .meter-label .pct{font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;color:var(--accent);font-weight:500}
+  .meter{height:6px;background:rgba(193,80,46,0.10);border-radius:3px;overflow:hidden}
+  .meter .fill{height:100%;background:linear-gradient(90deg, var(--accent) 0%, #d97455 100%);border-radius:3px}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;STEP III&lt;/span&gt;&lt;span&gt;PASTELLA&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;col-left&quot;&gt;
+      &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;label&quot;&gt;The Emulsion Base&lt;/div&gt;
+      &lt;div class=&quot;step-label&quot;&gt;&lt;span class=&quot;roman&quot;&gt;iii.&lt;/span&gt;&lt;span class=&quot;name&quot;&gt;The Third Step&lt;/span&gt;&lt;/div&gt;
+      &lt;h1 class=&quot;headline&quot;&gt;Whisking &lt;em&gt;Pastella&lt;/em&gt;&lt;/h1&gt;
+      &lt;p class=&quot;essay&quot;&gt;&lt;strong&gt;The paste technique.&lt;/strong&gt; Finely grate Pecorino Romano using a microplane so it melts instantly &lt;em&gt;without clumping&lt;/em&gt; when it hits the yolks.&lt;/p&gt;
+      &lt;p class=&quot;essay&quot;&gt;&lt;strong&gt;Whisking pastella.&lt;/strong&gt; Whisk the cheese, raw yolks, and freshly cracked pepper together. Temper with a tablespoon of hot pasta water to form a smooth, thick, golden paste.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-right&quot;&gt;
+      &lt;div class=&quot;big-stat&quot;&gt;
+        &lt;div class=&quot;label&quot;&gt;The Statistic&lt;/div&gt;
+        &lt;div class=&quot;num&quot;&gt;100%&lt;/div&gt;
+        &lt;div class=&quot;sub&quot;&gt;Emulsion Base&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;meter-wrap&quot;&gt;
+        &lt;div class=&quot;meter-label&quot;&gt;&lt;span class=&quot;name&quot;&gt;Pecorino&lt;/span&gt;&lt;span class=&quot;pct&quot;&gt;40%&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;meter&quot;&gt;&lt;div class=&quot;fill&quot; style=&quot;width:40%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;meter-wrap&quot;&gt;
+        &lt;div class=&quot;meter-label&quot;&gt;&lt;span class=&quot;name&quot;&gt;Yolks&lt;/span&gt;&lt;span class=&quot;pct&quot;&gt;45%&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;meter&quot;&gt;&lt;div class=&quot;fill&quot; style=&quot;width:45%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;meter-wrap&quot;&gt;
+        &lt;div class=&quot;meter-label&quot;&gt;&lt;span class=&quot;name&quot;&gt;Black Pepper&lt;/span&gt;&lt;span class=&quot;pct&quot;&gt;10%&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;meter&quot;&gt;&lt;div class=&quot;fill&quot; style=&quot;width:10%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;meter-wrap&quot;&gt;
+        &lt;div class=&quot;meter-label&quot;&gt;&lt;span class=&quot;name&quot;&gt;Starch Water&lt;/span&gt;&lt;span class=&quot;pct&quot;&gt;5%&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;meter&quot;&gt;&lt;div class=&quot;fill&quot; style=&quot;width:5%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Step III · Pastella&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 09&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-9" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Content · Step 4: The Final Emulsion&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .step-label{display:inline-flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .step-label .roman{font-family:var(--italic-font);font-style:italic;font-size:32px;color:var(--accent);font-weight:400;line-height:1}
+  .step-label .name{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:8px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .sub{font-family:var(--body-font);font-size:15px;color:var(--ink-secondary);font-style:italic;margin-bottom:38px;letter-spacing:0.005em}
+  .timeline{position:relative;margin-top:8px}
+  .timeline-line{position:absolute;left:0;right:0;top:54px;height:1px;background:linear-gradient(90deg, var(--accent) 0%, rgba(193,80,46,0.4) 80%, transparent 100%)}
+  .steps{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:30px}
+  .step-card{position:relative;padding-top:80px}
+  .step-card .num{position:absolute;top:0;left:0;width:54px;height:54px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--italic-font);font-style:italic;font-size:24px;color:var(--accent);background:var(--bg)}
+  .step-card .arrow{position:absolute;top:24px;left:64px;font-family:var(--italic-font);font-style:italic;font-size:18px;color:var(--accent);opacity:0.5}
+  .step-card h3{font-family:var(--display-font);font-size:20px;font-weight:600;color:var(--ink-deep);line-height:1.18;letter-spacing:-0.01em;margin-bottom:12px}
+  .step-card h3 em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .step-card p{font-family:var(--body-font);font-size:14px;line-height:1.62;color:var(--ink-secondary)}
+  .step-card .time{font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--accent);font-weight:500;letter-spacing:0.05em;margin-bottom:8px;display:block;text-transform:uppercase}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;STEP IV&lt;/span&gt;&lt;span&gt;EMULSION&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;label&quot;&gt;Where Carbonara is Born&lt;/div&gt;
+    &lt;div class=&quot;step-label&quot;&gt;&lt;span class=&quot;roman&quot;&gt;iv.&lt;/span&gt;&lt;span class=&quot;name&quot;&gt;The Final Step&lt;/span&gt;&lt;/div&gt;
+    &lt;h1 class=&quot;headline&quot;&gt;The Final &lt;em&gt;Emulsion&lt;/em&gt;&lt;/h1&gt;
+    &lt;p class=&quot;sub&quot;&gt;Four movements, one perfect sauce. Everything must move in &lt;em&gt;six seconds&lt;/em&gt;.&lt;/p&gt;
+    &lt;div class=&quot;timeline&quot;&gt;
+      &lt;div class=&quot;timeline-line&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;steps&quot;&gt;
+        &lt;div class=&quot;step-card&quot;&gt;
+          &lt;div class=&quot;num&quot;&gt;i&lt;/div&gt;
+          &lt;span class=&quot;time&quot;&gt;+ 0 sec&lt;/span&gt;
+          &lt;h3&gt;Sauté &lt;em&gt;Coat&lt;/em&gt;&lt;/h3&gt;
+          &lt;p&gt;Transfer al dente pasta directly into the skillet with warm guanciale fat; toss to coat evenly.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;step-card&quot;&gt;
+          &lt;div class=&quot;num&quot;&gt;ii&lt;/div&gt;
+          &lt;span class=&quot;time&quot;&gt;+ 30 sec&lt;/span&gt;
+          &lt;h3&gt;Off-Heat &lt;em&gt;Cool&lt;/em&gt;&lt;/h3&gt;
+          &lt;p&gt;Let the skillet sit off the burner for 30 seconds. This is the moment that prevents scrambled eggs.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;step-card&quot;&gt;
+          &lt;div class=&quot;num&quot;&gt;iii&lt;/div&gt;
+          &lt;span class=&quot;time&quot;&gt;+ 60 sec&lt;/span&gt;
+          &lt;h3&gt;Pour &lt;em&gt;Paste&lt;/em&gt;&lt;/h3&gt;
+          &lt;p&gt;Pour the yolk-cheese pastella over the pasta, then throw in the crispy guanciale pieces.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;step-card&quot;&gt;
+          &lt;div class=&quot;num&quot;&gt;iv&lt;/div&gt;
+          &lt;span class=&quot;time&quot;&gt;+ 90 sec&lt;/span&gt;
+          &lt;h3&gt;Rapid &lt;em&gt;Agitation&lt;/em&gt;&lt;/h3&gt;
+          &lt;p&gt;Add a ladle of pasta water. Toss aggressively to create a creamy, silk-like golden emulsion.&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Step IV · Emulsion&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 10&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-10" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;Content · Master Class Troubleshooting&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:8px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .sub{font-family:var(--body-font);font-size:15px;color:var(--ink-secondary);font-style:italic;margin-bottom:36px;letter-spacing:0.005em}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1.5px solid var(--ink-deep)}
+  .item{padding:30px 24px 30px 0;border-right:0.5px solid var(--rule)}
+  .item:last-child{border-right:none}
+  .item .icon{width:32px;height:32px;margin-bottom:16px;color:var(--accent)}
+  .item h3{font-family:var(--display-font);font-size:19px;font-weight:600;color:var(--ink-deep);line-height:1.18;letter-spacing:-0.01em;margin-bottom:10px}
+  .item h3 em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .item .label{font-family:var(--label-font);font-size:9.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:14px}
+  .item p{font-family:var(--body-font);font-size:14px;line-height:1.62;color:var(--ink-secondary)}
+  .item .fix{margin-top:12px;padding:10px 12px;background:rgba(193,80,46,0.07);border-left:1.5px solid var(--accent);font-family:var(--body-font);font-size:13px;color:var(--ink-primary);line-height:1.55}
+  .item .fix strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep);font-size:11.5px;letter-spacing:0.18em;text-transform:uppercase;display:block;margin-bottom:4px}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;TROUBLESHOOTING&lt;/span&gt;&lt;span&gt;FIXES&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;label&quot;&gt;Master Class · Field Notes&lt;/div&gt;
+    &lt;h1 class=&quot;headline&quot;&gt;Master Class &lt;em&gt;Troubleshooting&lt;/em&gt;&lt;/h1&gt;
+    &lt;p class=&quot;sub&quot;&gt;When things go wrong — and how to bring them back.&lt;/p&gt;
+    &lt;div class=&quot;grid&quot;&gt;
+      &lt;div class=&quot;item&quot;&gt;
+        &lt;svg class=&quot;icon&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot;&gt;&lt;path d=&quot;M12 2v6M12 16v6M2 12h6M16 12h6&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot; fill=&quot;currentColor&quot;/&gt;&lt;/svg&gt;
+        &lt;div class=&quot;label&quot;&gt;The Symptom&lt;/div&gt;
+        &lt;h3&gt;Scrambled &lt;em&gt;Eggs?&lt;/em&gt;&lt;/h3&gt;
+        &lt;p&gt;The pan was too hot. Residual heat cooked the yolks into curds before they could emulsify.&lt;/p&gt;
+        &lt;div class=&quot;fix&quot;&gt;&lt;strong&gt;The Fix&lt;/strong&gt;Let the pan sit longer next run, or splash a tablespoon of cool pasta water before adding the egg paste.&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;item&quot;&gt;
+        &lt;svg class=&quot;icon&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot;&gt;&lt;path d=&quot;M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9-9-4-9-9z&quot;/&gt;&lt;path d=&quot;M9 12h6&quot;/&gt;&lt;/svg&gt;
+        &lt;div class=&quot;label&quot;&gt;The Symptom&lt;/div&gt;
+        &lt;h3&gt;Dry or Sticky &lt;em&gt;Sauce?&lt;/em&gt;&lt;/h3&gt;
+        &lt;p&gt;The emulsion lost moisture — too much fat absorbed by the pasta, or the pan was too cold.&lt;/p&gt;
+        &lt;div class=&quot;fix&quot;&gt;&lt;strong&gt;The Fix&lt;/strong&gt;Slowly stir in reserved pasta starch water, one tablespoon at a time, off the heat, until silken.&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;item&quot;&gt;
+        &lt;svg class=&quot;icon&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot;&gt;&lt;rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;18&quot; height=&quot;18&quot; rx=&quot;2&quot;/&gt;&lt;path d=&quot;M3 9h18M9 3v18&quot;/&gt;&lt;/svg&gt;
+        &lt;div class=&quot;label&quot;&gt;The Symptom&lt;/div&gt;
+        &lt;h3&gt;Clumping &lt;em&gt;Cheese?&lt;/em&gt;&lt;/h3&gt;
+        &lt;p&gt;The Pecorino was grated too coarsely, or it was tossed onto dry pasta before the fat was added.&lt;/p&gt;
+        &lt;div class=&quot;fix&quot;&gt;&lt;strong&gt;The Fix&lt;/strong&gt;Use a microplane, and always mix the cheese with the yolks into a paste &lt;em&gt;first&lt;/em&gt;.&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Troubleshooting · Field Notes&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 11&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+<iframe class="slide-frame" id="slide-11" style="display:none" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;title&gt;End · Buon Appetito&lt;/title&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&#x27;);
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --italic-font: &#x27;Instrument Serif&#x27;, &#x27;Fraunces&#x27;, Georgia, serif;
+    --body-font: &#x27;Source Serif 4&#x27;, Georgia, serif;
+    --label-font: &#x27;Inter&#x27;, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:&#x27;kern&#x27;,&#x27;liga&#x27;,&#x27;onum&#x27;,&#x27;ss01&#x27;;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 80px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:36px}
+  .headline{font-family:var(--display-font);font-size:140px;font-weight:500;color:var(--ink-deep);line-height:0.95;letter-spacing:-0.035em;margin-bottom:34px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent);font-size:148px;letter-spacing:-0.025em}
+  .essay{font-family:var(--body-font);font-size:18px;line-height:1.72;color:var(--ink-primary);max-width:780px;margin-bottom:36px}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:19px}
+  .serving-list{margin-top:8px;display:flex;flex-direction:column;gap:10px;max-width:780px;border-top:1px solid var(--rule);padding-top:22px}
+  .serving-item{display:flex;align-items:baseline;gap:18px}
+  .serving-item .glyph{font-family:var(--italic-font);font-style:italic;font-size:18px;color:var(--accent);width:24px}
+  .serving-item .text{font-family:var(--body-font);font-size:15.5px;color:var(--ink-secondary);line-height:1.5}
+  .serving-item .text em{font-family:var(--italic-font);font-style:italic;color:var(--accent)}
+  .serving-item .text strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep)}
+  .meta-row{margin-top:40px;display:flex;align-items:center;gap:16px;font-family:var(--label-font);font-size:10.5px;color:var(--ink-deep);letter-spacing:0.22em;text-transform:uppercase;font-weight:600}
+  .meta-row .sep{width:4px;height:4px;border-radius:50%;background:var(--ink-label);opacity:0.6}
+  .meta-row .cta{color:var(--accent);display:inline-flex;align-items:center;gap:8px}
+  .meta-row .cta .arrow{font-family:var(--display-font);font-style:normal;font-size:13px;letter-spacing:0}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;paper-grain&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-top&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;frame-line-bottom&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;masthead&quot;&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span class=&quot;brand&quot;&gt;Carbonara Journal&lt;/span&gt;&lt;span&gt;VOL. I&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;brand-meta&quot;&gt;&lt;span&gt;FINALE&lt;/span&gt;&lt;span&gt;SERVING&lt;/span&gt;&lt;span&gt;2026&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;stage&quot;&gt;
+    &lt;div class=&quot;accent-rule&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;label&quot;&gt;The Final Word · Closing Notes&lt;/div&gt;
+    &lt;h1 class=&quot;headline&quot;&gt;Buon &lt;em&gt;Appetito!&lt;/em&gt;&lt;/h1&gt;
+    &lt;p class=&quot;essay&quot;&gt;Your authentic Roman Carbonara is complete. The emulsion holds, the silk clings to the rigatoni, and the kitchen smells of &lt;em&gt;pork and pepper&lt;/em&gt;. There is no cream. There is no regret.&lt;/p&gt;
+    &lt;div class=&quot;serving-list&quot;&gt;
+      &lt;div class=&quot;serving-item&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;i.&lt;/span&gt;&lt;span class=&quot;text&quot;&gt;&lt;strong&gt;Serve immediately&lt;/strong&gt; in warm bowls — carbonara waits for no one, and the sauce sets as it cools.&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;serving-item&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;ii.&lt;/span&gt;&lt;span class=&quot;text&quot;&gt;Top with &lt;em&gt;reserved crispy guanciale&lt;/em&gt;, extra Pecorino, and a final crack of fresh black pepper.&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;serving-item&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;iii.&lt;/span&gt;&lt;span class=&quot;text&quot;&gt;Pair with a cold, crisp Italian white — &lt;strong&gt;Frascati&lt;/strong&gt; or &lt;strong&gt;Verdicchio&lt;/strong&gt; cut through the richness beautifully.&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;meta-row&quot;&gt;
+      &lt;span&gt;End of Manual&lt;/span&gt;
+      &lt;span class=&quot;sep&quot;&gt;&lt;/span&gt;
+      &lt;span&gt;12 Slides&lt;/span&gt;
+      &lt;span class=&quot;sep&quot;&gt;&lt;/span&gt;
+      &lt;span class=&quot;cta&quot;&gt;Cook Again &lt;span class=&quot;arrow&quot;&gt;↺&lt;/span&gt;&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;left-foot&quot;&gt;&lt;span class=&quot;glyph&quot;&gt;C.J.&lt;/span&gt;&lt;span&gt;Finis · Buon Appetito&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;folio&quot;&gt;§ 12&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" sandbox="allow-same-origin" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="nav-hint">Arrow keys to navigate</div>
+<script>
+let cur = 0;
+const frames = document.querySelectorAll('.slide-frame');
+const total = frames.length;
+const info = document.getElementById('page-info');
+const stage = document.getElementById('stage');
+
+function resize() {
+  const sw = stage.clientWidth, sh = stage.clientHeight;
+  const scale = Math.min(sw / 1280, sh / 720);
+  frames.forEach(f => f.style.transform = 'scale(' + scale + ')');
+}
+function show(i) {
+  frames.forEach((f, idx) => f.style.display = idx === i ? 'block' : 'none');
+  info.textContent = (i+1) + ' / ' + total;
+  document.getElementById('btn-prev').disabled = i === 0;
+  document.getElementById('btn-next').disabled = i === total - 1;
+}
+function nav(d) {
+  const n = cur + d;
+  if (n >= 0 && n < total) { cur = n; show(cur); }
+}
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowLeft'||e.key==='ArrowUp') nav(-1);
+  if (e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') nav(1);
+});
+window.addEventListener('resize', resize);
+resize();
+show(0);
+</script>
+</body>
+</html>

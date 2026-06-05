@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Content · The Three Golden Rules</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: 'Source Serif 4', Georgia, serif;
+    --italic-font: 'Instrument Serif', 'Fraunces', Georgia, serif;
+    --body-font: 'Source Serif 4', Georgia, serif;
+    --label-font: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:'kern','liga','onum','ss01';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:8px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .sub{font-family:var(--body-font);font-size:16px;color:var(--ink-secondary);font-style:italic;margin-bottom:42px;letter-spacing:0.005em}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1.5px solid var(--ink-deep)}
+  .tile{padding:36px 24px 36px 0;border-right:0.5px solid var(--rule)}
+  .tile:last-child{border-right:none}
+  .tile .num{font-family:var(--italic-font);font-style:italic;font-size:54px;color:var(--accent);line-height:1;letter-spacing:-0.02em;margin-bottom:18px;display:block}
+  .tile .icon{width:36px;height:36px;margin-bottom:18px;color:var(--ink-deep)}
+  .tile h3{font-family:var(--display-font);font-size:21px;font-weight:600;color:var(--ink-deep);line-height:1.18;letter-spacing:-0.01em;margin-bottom:14px}
+  .tile h3 em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .tile p{font-family:var(--body-font);font-size:14.5px;line-height:1.62;color:var(--ink-secondary)}
+  .tile p em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:15px}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+</style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="frame-line-top"></div>
+  <div class="frame-line-bottom"></div>
+  <div class="masthead">
+    <div class="brand-meta"><span class="brand">Carbonara Journal</span><span>VOL. I</span></div>
+    <div class="brand-meta"><span>PHILOSOPHY</span><span>THREE LAWS</span><span>2026</span></div>
+  </div>
+  <div class="stage">
+    <div class="accent-rule"></div>
+    <div class="label">The Guiding Philosophy · Non-Negotiable</div>
+    <h1 class="headline">The Three <em>Golden</em> Rules</h1>
+    <p class="sub">If you break one, you'll scramble the eggs, mask the pork, or split the sauce.</p>
+    <div class="grid">
+      <div class="tile">
+        <span class="num">I.</span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        <h3>Absolute <em>No-Cream</em></h3>
+        <p>Never mask the natural pork fat and sharp Pecorino with cream. Trust food chemistry — yolks, fat, and starch <em>are</em> the sauce.</p>
+      </div>
+      <div class="tile">
+        <span class="num">II.</span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+        <h3>Save Your <em>Water</em></h3>
+        <p>Pasta starch water is the thermal stabilizer that prevents scrambled eggs. A ladleful rescues any sauce that's about to break.</p>
+      </div>
+      <div class="tile">
+        <span class="num">III.</span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="8" x2="16" y2="16"/><line x1="16" y1="8" x2="8" y2="16"/></svg>
+        <h3>Execute <em>Off-Heat</em></h3>
+        <p>Direct burner heat ruins the emulsion. Combine yolk paste and pasta completely off the burner, using residual pan warmth.</p>
+      </div>
+    </div>
+  </div>
+  <div class="left-foot"><span class="glyph">C.J.</span><span>Philosophy · Three Laws</span></div>
+  <div class="folio">§ 05</div>
+</body>
+</html>

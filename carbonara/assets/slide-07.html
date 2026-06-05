@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Content · Step 1: Slow Rendering</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: 'Source Serif 4', Georgia, serif;
+    --italic-font: 'Instrument Serif', 'Fraunces', Georgia, serif;
+    --body-font: 'Source Serif 4', Georgia, serif;
+    --label-font: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:'kern','liga','onum','ss01';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2;display:grid;grid-template-columns:1.1fr 1fr;gap:60px}
+  .col-left{display:flex;flex-direction:column}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .step-label{display:inline-flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .step-label .roman{font-family:var(--italic-font);font-style:italic;font-size:32px;color:var(--accent);font-weight:400;line-height:1}
+  .step-label .name{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:30px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:15.5px;line-height:1.7;color:var(--ink-primary);margin-bottom:14px;max-width:540px}
+  .essay strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep)}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent)}
+  .checklist{margin-top:20px;border-top:0.5px solid var(--rule)}
+  .check{display:grid;grid-template-columns:24px 1fr;gap:14px;padding:14px 0;border-bottom:0.5px solid var(--rule);align-items:start}
+  .check .mark{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:18px;line-height:1.2;margin-top:2px}
+  .check .text strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep);font-size:15px;display:block;margin-bottom:3px;letter-spacing:-0.005em}
+  .check .text span{font-family:var(--body-font);font-size:14px;color:var(--ink-secondary);line-height:1.55}
+  .col-right{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;position:relative;padding-top:30px}
+  .visual{position:relative;width:100%;max-width:440px;height:380px;border-radius:2px;overflow:hidden;background:linear-gradient(135deg, #2a1810 0%, #4a3020 50%, #2a1810 100%);box-shadow:0 30px 60px rgba(42,24,16,0.18)}
+  .pan-shape{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:320px;height:200px;border-radius:50%;background:radial-gradient(ellipse at center, #4a3a30 0%, #2a1810 75%, #1f1410 100%);box-shadow:inset 0 0 60px rgba(0,0,0,0.6), inset 0 -8px 24px rgba(255,255,255,0.05)}
+  .pan-bacon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg);width:60%;height:24px;background:linear-gradient(90deg, #c45a3a 0%, #e08560 25%, #c45a3a 50%, #8b3a1f 100%);border-radius:6px;box-shadow:0 4px 10px rgba(0,0,0,0.4)}
+  .pan-bacon.b2{transform:translate(-50%,-30%) rotate(8deg);width:55%;height:22px;background:linear-gradient(90deg, #8b3a1f 0%, #c45a3a 50%, #6b2a14 100%)}
+  .pan-bacon.b3{transform:translate(-50%,10%) rotate(-5deg);width:65%;height:26px;background:linear-gradient(90deg, #c45a3a 0%, #d97455 30%, #a84a2a 70%, #8b3a1f 100%)}
+  .pan-shimmer{position:absolute;left:50%;top:35%;transform:translate(-50%,-50%);width:80%;height:8px;background:radial-gradient(ellipse, rgba(255,200,120,0.5) 0%, transparent 70%);filter:blur(3px)}
+  .visual-caption{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-family:var(--label-font);font-size:10.5px;color:rgba(243,235,222,0.7);letter-spacing:0.28em;text-transform:uppercase;font-weight:500}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+</style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="frame-line-top"></div>
+  <div class="frame-line-bottom"></div>
+  <div class="masthead">
+    <div class="brand-meta"><span class="brand">Carbonara Journal</span><span>VOL. I</span></div>
+    <div class="brand-meta"><span>STEP I</span><span>RENDERING</span><span>2026</span></div>
+  </div>
+  <div class="stage">
+    <div class="col-left">
+      <div class="accent-rule"></div>
+      <div class="label">Foundation of Flavor</div>
+      <div class="step-label"><span class="roman">i.</span><span class="name">The First Step</span></div>
+      <h1 class="headline">Slow <em>Rendering</em></h1>
+      <p class="essay">Guanciale releases its soul through patience. <strong>Low and slow</strong> is the only tempo that renders the fat <em>silky</em> while crisping the meat golden.</p>
+      <div class="checklist">
+        <div class="check">
+          <div class="mark">i.</div>
+          <div class="text"><strong>Cut chunkily</strong><span>Slice guanciale into 1cm thick batons so they stay tender inside when crisp.</span></div>
+        </div>
+        <div class="check">
+          <div class="mark">ii.</div>
+          <div class="text"><strong>Start cold</strong><span>Place pork into a cold pan with no extra oil; let the fat render out slowly.</span></div>
+        </div>
+        <div class="check">
+          <div class="mark">iii.</div>
+          <div class="text"><strong>Slow sauté</strong><span>Cook on low-medium for 8–10 minutes until golden and crispy.</span></div>
+        </div>
+        <div class="check">
+          <div class="mark">iv.</div>
+          <div class="text"><strong>Retain the fat</strong><span>Remove the meat, but leave the rendered liquid fat base in the pan.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-right">
+      <div class="visual">
+        <div class="pan-shape"></div>
+        <div class="pan-shimmer"></div>
+        <div class="pan-bacon b1"></div>
+        <div class="pan-bacon b2"></div>
+        <div class="pan-bacon b3"></div>
+        <div class="visual-caption">— guanciale rendering in cast iron —</div>
+      </div>
+    </div>
+  </div>
+  <div class="left-foot"><span class="glyph">C.J.</span><span>Step I · Rendering</span></div>
+  <div class="folio">§ 07</div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Content · The Ingredient Matrix</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: 'Source Serif 4', Georgia, serif;
+    --italic-font: 'Instrument Serif', 'Fraunces', Georgia, serif;
+    --body-font: 'Source Serif 4', Georgia, serif;
+    --label-font: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:'kern','liga','onum','ss01';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .headline{font-family:var(--display-font);font-size:48px;font-weight:500;color:var(--ink-deep);line-height:1.05;letter-spacing:-0.025em;max-width:900px;margin-bottom:8px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .sub{font-family:var(--body-font);font-size:15px;color:var(--ink-secondary);font-style:italic;margin-bottom:34px;letter-spacing:0.005em}
+  .table-wrap{margin-top:8px;display:grid;grid-template-columns:140px 1fr 1fr 1.2fr;border-top:1.5px solid var(--ink-deep);border-bottom:1.5px solid var(--ink-deep)}
+  .th{font-family:var(--label-font);font-size:9.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;padding:12px 14px 10px 0;border-bottom:0.5px solid var(--rule);text-align:left}
+  .row{display:contents}
+  .row > *{padding:14px 14px 14px 0;border-bottom:0.5px solid var(--rule);font-size:14px;line-height:1.5;color:var(--ink-primary);vertical-align:top}
+  .row:last-child > *{border-bottom:none}
+  .row .name{font-family:var(--display-font);font-weight:600;font-size:14.5px;color:var(--ink-deep);letter-spacing:0.01em}
+  .row .prime{font-family:var(--italic-font);font-style:italic;font-size:15.5px;color:var(--ink-primary);font-weight:400}
+  .row .alt{font-family:var(--body-font);color:var(--ink-secondary);font-size:13.5px}
+  .row .role{font-family:var(--body-font);color:var(--ink-secondary);font-size:13.5px;line-height:1.55}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+</style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="frame-line-top"></div>
+  <div class="frame-line-bottom"></div>
+  <div class="masthead">
+    <div class="brand-meta"><span class="brand">Carbonara Journal</span><span>VOL. I</span></div>
+    <div class="brand-meta"><span>PART ONE</span><span>INGREDIENTS</span><span>2026</span></div>
+  </div>
+  <div class="stage">
+    <div class="accent-rule"></div>
+    <div class="label">The Pantry · Five Roles</div>
+    <h1 class="headline">The Ingredient <em>Matrix</em></h1>
+    <p class="sub">Five elements, five roles — and why substitutes only sometimes work.</p>
+    <div class="table-wrap">
+      <div class="th">Element</div>
+      <div class="th">Authentic</div>
+      <div class="th">Acceptable Alt.</div>
+      <div class="th">Role in the Dish</div>
+      <div class="row">
+        <div class="name">Pork</div>
+        <div class="prime">Guanciale</div>
+        <div class="alt">Pancetta (less ideal)</div>
+        <div class="role">Renders the savory, peppery fat base that carries the sauce.</div>
+      </div>
+      <div class="row">
+        <div class="name">Cheese</div>
+        <div class="prime">Pecorino Romano</div>
+        <div class="alt">Parmigiano-Reggiano</div>
+        <div class="role">Thickens, salts, and adds the sharp backbone flavor.</div>
+      </div>
+      <div class="row">
+        <div class="name">Eggs</div>
+        <div class="prime">Fresh Farm Yolks</div>
+        <div class="alt">Whole eggs + extra yolks</div>
+        <div class="role">Natural emulsifier — binds fat and water into silk.</div>
+      </div>
+      <div class="row">
+        <div class="name">Pasta</div>
+        <div class="prime">Spaghetti or Rigatoni</div>
+        <div class="alt">Bucatini, tonnarelli</div>
+        <div class="role">Carries starch; the hidden fifth ingredient.</div>
+      </div>
+      <div class="row">
+        <div class="name">Pepper</div>
+        <div class="prime">Tellicherry, cracked fresh</div>
+        <div class="alt">Coarse black pepper</div>
+        <div class="role">Cuts through rich fat with gentle heat.</div>
+      </div>
+    </div>
+  </div>
+  <div class="left-foot"><span class="glyph">C.J.</span><span>The Pantry</span></div>
+  <div class="folio">§ 03</div>
+</body>
+</html>

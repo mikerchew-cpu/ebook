@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Content · Step 2: Boiling Pasta</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: 'Source Serif 4', Georgia, serif;
+    --italic-font: 'Instrument Serif', 'Fraunces', Georgia, serif;
+    --body-font: 'Source Serif 4', Georgia, serif;
+    --label-font: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:'kern','liga','onum','ss01';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2;display:grid;grid-template-columns:1fr 1.1fr;gap:0}
+  .col-left{position:relative;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;padding-right:30px;overflow:hidden}
+  .visual{position:relative;width:380px;height:480px;border-radius:2px;overflow:hidden;background:linear-gradient(180deg, #1a1410 0%, #2a1810 50%, #0f0a05 100%);box-shadow:0 30px 60px rgba(0,0,0,0.25)}
+  .water-bubbles{position:absolute;inset:0;background-image:radial-gradient(circle at 25% 30%, rgba(255,255,255,0.10) 0%, transparent 8%), radial-gradient(circle at 70% 50%, rgba(255,255,255,0.08) 0%, transparent 6%), radial-gradient(circle at 50% 75%, rgba(255,255,255,0.12) 0%, transparent 10%), radial-gradient(circle at 85% 25%, rgba(255,255,255,0.06) 0%, transparent 5%), radial-gradient(circle at 15% 65%, rgba(255,255,255,0.10) 0%, transparent 7%), radial-gradient(circle at 60% 35%, rgba(255,255,255,0.07) 0%, transparent 5%);animation:none}
+  .pasta-strand{position:absolute;left:50%;top:30%;width:6px;height:340px;background:linear-gradient(180deg, #f0c050 0%, #d49a30 100%);border-radius:3px;transform:translateX(-50%) rotate(8deg);box-shadow:0 0 8px rgba(240,192,80,0.3)}
+  .pasta-strand.s2{left:48%;transform:translateX(-50%) rotate(-6deg);width:5px;height:320px;background:linear-gradient(180deg, #e0a830 0%, #b8881a 100%)}
+  .pasta-strand.s3{left:52%;transform:translateX(-50%) rotate(15deg);width:6px;height:300px;background:linear-gradient(180deg, #f0c050 0%, #d49a30 100%)}
+  .pasta-strand.s4{left:46%;transform:translateX(-50%) rotate(-12deg);width:5px;height:310px;background:linear-gradient(180deg, #e8b838 0%, #c89220 100%)}
+  .pasta-strand.s5{left:54%;transform:translateX(-50%) rotate(4deg);width:5px;height:330px;background:linear-gradient(180deg, #f0c050 0%, #d49a30 100%)}
+  .visual-caption{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-family:var(--label-font);font-size:10.5px;color:rgba(243,235,222,0.7);letter-spacing:0.28em;text-transform:uppercase;font-weight:500}
+  .col-right{display:flex;flex-direction:column;padding-left:50px}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .step-label{display:inline-flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .step-label .roman{font-family:var(--italic-font);font-style:italic;font-size:32px;color:var(--accent);font-weight:400;line-height:1}
+  .step-label .name{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:30px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:15.5px;line-height:1.7;color:var(--ink-primary);margin-bottom:14px;max-width:540px}
+  .essay strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep)}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent)}
+  .stat-row{margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .stat{padding:18px 0;border-top:1.5px solid var(--ink-deep)}
+  .stat .num{font-family:var(--italic-font);font-style:italic;font-size:38px;color:var(--accent);line-height:1;letter-spacing:-0.02em;margin-bottom:6px}
+  .stat .name{font-family:var(--label-font);font-size:10px;color:var(--ink-label);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:8px}
+  .stat .desc{font-family:var(--body-font);font-size:13px;color:var(--ink-secondary);line-height:1.55}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+</style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="frame-line-top"></div>
+  <div class="frame-line-bottom"></div>
+  <div class="masthead">
+    <div class="brand-meta"><span class="brand">Carbonara Journal</span><span>VOL. I</span></div>
+    <div class="brand-meta"><span>STEP II</span><span>BOILING</span><span>2026</span></div>
+  </div>
+  <div class="stage">
+    <div class="col-left">
+      <div class="visual">
+        <div class="water-bubbles"></div>
+        <div class="pasta-strand"></div>
+        <div class="pasta-strand s2"></div>
+        <div class="pasta-strand s3"></div>
+        <div class="pasta-strand s4"></div>
+        <div class="pasta-strand s5"></div>
+        <div class="visual-caption">— spaghetti in salted water —</div>
+      </div>
+    </div>
+    <div class="col-right">
+      <div class="accent-rule"></div>
+      <div class="label">Starch is Your Stabilizer</div>
+      <div class="step-label"><span class="roman">ii.</span><span class="name">The Second Step</span></div>
+      <h1 class="headline">Boiling <em>Pasta</em></h1>
+      <p class="essay"><strong>Molto al dente.</strong> Boil the spaghetti or rigatoni in heavily salted water — it should taste like the sea.</p>
+      <p class="essay"><strong>Starch concentration tip.</strong> Use slightly less water than the package suggests to concentrate the starches in the pot. Cloudy pasta water is <em>golden</em>, not wasteful.</p>
+      <p class="essay"><strong>Under-cook slightly.</strong> Pull the pasta out <em>2 minutes</em> before package directions so it can finish in the rendering pan.</p>
+      <div class="stat-row">
+        <div class="stat">
+          <div class="num">2 min</div>
+          <div class="name">Under-cook</div>
+          <div class="desc">Pasta finishes in the pan with the rendered guanciale fat.</div>
+        </div>
+        <div class="stat">
+          <div class="num">1.0%</div>
+          <div class="name">Water Salinity</div>
+          <div class="desc">Heavily salted — the only seasoning the pasta will get.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="left-foot"><span class="glyph">C.J.</span><span>Step II · Boiling</span></div>
+  <div class="folio">§ 08</div>
+</body>
+</html>

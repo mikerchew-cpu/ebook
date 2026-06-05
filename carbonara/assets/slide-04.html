@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Content · The Soul of the Dish</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --yolk: #f0c050; --rule: rgba(42,24,16,0.12);
+    --display-font: 'Source Serif 4', Georgia, serif;
+    --italic-font: 'Instrument Serif', 'Fraunces', Georgia, serif;
+    --body-font: 'Source Serif 4', Georgia, serif;
+    --label-font: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:'kern','liga','onum','ss01';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(240,192,80,0.08) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2;display:grid;grid-template-columns:1fr 1.1fr;gap:60px}
+  .col-left{display:flex;flex-direction:column}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:30px}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:32px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:16px;line-height:1.72;color:var(--ink-primary);max-width:520px;margin-bottom:22px}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:17px}
+  .essay strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep)}
+  .pull-quote{margin-top:8px;padding:18px 0 18px 20px;border-left:1.5px solid var(--accent);
+    font-family:var(--italic-font);font-style:italic;font-size:17px;line-height:1.55;color:var(--ink-secondary);max-width:500px;letter-spacing:0.005em}
+  .col-right{display:flex;align-items:center;justify-content:center;position:relative}
+  .yolk-stage{position:relative;width:360px;height:360px;display:flex;align-items:center;justify-content:center}
+  .yolk-circle{width:280px;height:280px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #f7d978 0%, #f0c050 38%, #d49a30 75%, #a86f1e 100%);
+    box-shadow:0 30px 60px rgba(168,111,30,0.18), inset 0 -8px 24px rgba(168,111,30,0.18), inset 0 8px 24px rgba(255,255,255,0.25);
+    position:relative}
+  .yolk-highlight{position:absolute;top:50px;left:60px;width:80px;height:50px;border-radius:50%;
+    background:radial-gradient(ellipse, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.0) 70%);filter:blur(2px)}
+  .yolk-label{position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;white-space:nowrap}
+  .yolk-caption{position:absolute;top:-46px;left:50%;transform:translateX(-50%);font-family:var(--italic-font);font-style:italic;font-size:15px;color:var(--ink-secondary);white-space:nowrap}
+  .yolk-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--italic-font);font-style:italic;font-size:36px;color:rgba(42,24,16,0.7);font-weight:400}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+</style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="frame-line-top"></div>
+  <div class="frame-line-bottom"></div>
+  <div class="masthead">
+    <div class="brand-meta"><span class="brand">Carbonara Journal</span><span>VOL. I</span></div>
+    <div class="brand-meta"><span>SPOTLIGHT</span><span>EGGS</span><span>2026</span></div>
+  </div>
+  <div class="stage">
+    <div class="col-left">
+      <div class="accent-rule"></div>
+      <div class="label">Ingredient Spotlight · The Emulsifier</div>
+      <h1 class="headline">The <em>Soul</em> of the Dish: Eggs</h1>
+      <p class="essay"><strong>Why only yolks matter.</strong> Velvety creaminess is strictly achieved through the natural emulsion of yolk, hot starch water, and rendered guanciale fat. The lecithin in yolks is the magic.</p>
+      <p class="essay"><strong>The problem with cream.</strong> Cream dilutes the deep umami of guanciale and prevents proper starch binding. It masks, rather than reveals, what good ingredients already are.</p>
+      <div class="pull-quote">&ldquo; When the egg hits the warm pasta, it doesn't cook — it <em>melts</em>. That's the difference. &rdquo;</div>
+    </div>
+    <div class="col-right">
+      <div class="yolk-stage">
+        <div class="yolk-caption">— fresh farm yolk —</div>
+        <div class="yolk-circle">
+          <div class="yolk-highlight"></div>
+          <div class="yolk-num">100%</div>
+        </div>
+        <div class="yolk-label">The Emulsifier</div>
+      </div>
+    </div>
+  </div>
+  <div class="left-foot"><span class="glyph">C.J.</span><span>Spotlight · Eggs</span></div>
+  <div class="folio">§ 04</div>
+</body>
+</html>

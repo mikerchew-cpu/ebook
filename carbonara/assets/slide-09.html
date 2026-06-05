@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Content · Step 3: Whisking Pastella</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: 'Source Serif 4', Georgia, serif;
+    --italic-font: 'Instrument Serif', 'Fraunces', Georgia, serif;
+    --body-font: 'Source Serif 4', Georgia, serif;
+    --label-font: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:'kern','liga','onum','ss01';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(240,192,80,0.10) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:60px}
+  .col-left{display:flex;flex-direction:column}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .step-label{display:inline-flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .step-label .roman{font-family:var(--italic-font);font-style:italic;font-size:32px;color:var(--accent);font-weight:400;line-height:1}
+  .step-label .name{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:30px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:15.5px;line-height:1.7;color:var(--ink-primary);margin-bottom:14px;max-width:520px}
+  .essay strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep)}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent)}
+  .col-right{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;position:relative;padding-top:30px}
+  .big-stat{margin-bottom:36px;padding-bottom:24px;border-bottom:1.5px solid var(--ink-deep);width:100%}
+  .big-stat .label{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.28em;text-transform:uppercase;margin-bottom:14px}
+  .big-stat .num{font-family:var(--italic-font);font-style:italic;font-size:88px;color:var(--accent);font-weight:400;line-height:1;letter-spacing:-0.025em;margin-bottom:8px}
+  .big-stat .sub{font-family:var(--display-font);font-size:18px;color:var(--ink-deep);font-weight:500;font-style:italic;letter-spacing:0.005em}
+  .meter-wrap{margin-bottom:30px;width:100%}
+  .meter-label{display:flex;justify-content:space-between;margin-bottom:8px}
+  .meter-label .name{font-family:var(--label-font);font-size:10px;color:var(--ink-label);font-weight:600;letter-spacing:0.22em;text-transform:uppercase}
+  .meter-label .pct{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);font-weight:500}
+  .meter{height:6px;background:rgba(193,80,46,0.10);border-radius:3px;overflow:hidden}
+  .meter .fill{height:100%;background:linear-gradient(90deg, var(--accent) 0%, #d97455 100%);border-radius:3px}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+</style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="frame-line-top"></div>
+  <div class="frame-line-bottom"></div>
+  <div class="masthead">
+    <div class="brand-meta"><span class="brand">Carbonara Journal</span><span>VOL. I</span></div>
+    <div class="brand-meta"><span>STEP III</span><span>PASTELLA</span><span>2026</span></div>
+  </div>
+  <div class="stage">
+    <div class="col-left">
+      <div class="accent-rule"></div>
+      <div class="label">The Emulsion Base</div>
+      <div class="step-label"><span class="roman">iii.</span><span class="name">The Third Step</span></div>
+      <h1 class="headline">Whisking <em>Pastella</em></h1>
+      <p class="essay"><strong>The paste technique.</strong> Finely grate Pecorino Romano using a microplane so it melts instantly <em>without clumping</em> when it hits the yolks.</p>
+      <p class="essay"><strong>Whisking pastella.</strong> Whisk the cheese, raw yolks, and freshly cracked pepper together. Temper with a tablespoon of hot pasta water to form a smooth, thick, golden paste.</p>
+    </div>
+    <div class="col-right">
+      <div class="big-stat">
+        <div class="label">The Statistic</div>
+        <div class="num">100%</div>
+        <div class="sub">Emulsion Base</div>
+      </div>
+      <div class="meter-wrap">
+        <div class="meter-label"><span class="name">Pecorino</span><span class="pct">40%</span></div>
+        <div class="meter"><div class="fill" style="width:40%"></div></div>
+      </div>
+      <div class="meter-wrap">
+        <div class="meter-label"><span class="name">Yolks</span><span class="pct">45%</span></div>
+        <div class="meter"><div class="fill" style="width:45%"></div></div>
+      </div>
+      <div class="meter-wrap">
+        <div class="meter-label"><span class="name">Black Pepper</span><span class="pct">10%</span></div>
+        <div class="meter"><div class="fill" style="width:10%"></div></div>
+      </div>
+      <div class="meter-wrap">
+        <div class="meter-label"><span class="name">Starch Water</span><span class="pct">5%</span></div>
+        <div class="meter"><div class="fill" style="width:5%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="left-foot"><span class="glyph">C.J.</span><span>Step III · Pastella</span></div>
+  <div class="folio">§ 09</div>
+</body>
+</html>

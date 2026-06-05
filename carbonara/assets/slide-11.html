@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Content · Master Class Troubleshooting</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: 'Source Serif 4', Georgia, serif;
+    --italic-font: 'Instrument Serif', 'Fraunces', Georgia, serif;
+    --body-font: 'Source Serif 4', Georgia, serif;
+    --label-font: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:'kern','liga','onum','ss01';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:8px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .sub{font-family:var(--body-font);font-size:15px;color:var(--ink-secondary);font-style:italic;margin-bottom:36px;letter-spacing:0.005em}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1.5px solid var(--ink-deep)}
+  .item{padding:30px 24px 30px 0;border-right:0.5px solid var(--rule)}
+  .item:last-child{border-right:none}
+  .item .icon{width:32px;height:32px;margin-bottom:16px;color:var(--accent)}
+  .item h3{font-family:var(--display-font);font-size:19px;font-weight:600;color:var(--ink-deep);line-height:1.18;letter-spacing:-0.01em;margin-bottom:10px}
+  .item h3 em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .item .label{font-family:var(--label-font);font-size:9.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:14px}
+  .item p{font-family:var(--body-font);font-size:14px;line-height:1.62;color:var(--ink-secondary)}
+  .item .fix{margin-top:12px;padding:10px 12px;background:rgba(193,80,46,0.07);border-left:1.5px solid var(--accent);font-family:var(--body-font);font-size:13px;color:var(--ink-primary);line-height:1.55}
+  .item .fix strong{font-family:var(--display-font);font-weight:600;color:var(--ink-deep);font-size:11.5px;letter-spacing:0.18em;text-transform:uppercase;display:block;margin-bottom:4px}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+</style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="frame-line-top"></div>
+  <div class="frame-line-bottom"></div>
+  <div class="masthead">
+    <div class="brand-meta"><span class="brand">Carbonara Journal</span><span>VOL. I</span></div>
+    <div class="brand-meta"><span>TROUBLESHOOTING</span><span>FIXES</span><span>2026</span></div>
+  </div>
+  <div class="stage">
+    <div class="accent-rule"></div>
+    <div class="label">Master Class · Field Notes</div>
+    <h1 class="headline">Master Class <em>Troubleshooting</em></h1>
+    <p class="sub">When things go wrong — and how to bring them back.</p>
+    <div class="grid">
+      <div class="item">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+        <div class="label">The Symptom</div>
+        <h3>Scrambled <em>Eggs?</em></h3>
+        <p>The pan was too hot. Residual heat cooked the yolks into curds before they could emulsify.</p>
+        <div class="fix"><strong>The Fix</strong>Let the pan sit longer next run, or splash a tablespoon of cool pasta water before adding the egg paste.</div>
+      </div>
+      <div class="item">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9-9-4-9-9z"/><path d="M9 12h6"/></svg>
+        <div class="label">The Symptom</div>
+        <h3>Dry or Sticky <em>Sauce?</em></h3>
+        <p>The emulsion lost moisture — too much fat absorbed by the pasta, or the pan was too cold.</p>
+        <div class="fix"><strong>The Fix</strong>Slowly stir in reserved pasta starch water, one tablespoon at a time, off the heat, until silken.</div>
+      </div>
+      <div class="item">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+        <div class="label">The Symptom</div>
+        <h3>Clumping <em>Cheese?</em></h3>
+        <p>The Pecorino was grated too coarsely, or it was tossed onto dry pasta before the fat was added.</p>
+        <div class="fix"><strong>The Fix</strong>Use a microplane, and always mix the cheese with the yolks into a paste <em>first</em>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="left-foot"><span class="glyph">C.J.</span><span>Troubleshooting · Field Notes</span></div>
+  <div class="folio">§ 11</div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Content · Step 4: The Final Emulsion</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: 'Source Serif 4', Georgia, serif;
+    --italic-font: 'Instrument Serif', 'Fraunces', Georgia, serif;
+    --body-font: 'Source Serif 4', Georgia, serif;
+    --label-font: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:'kern','liga','onum','ss01';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 100px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px}
+  .step-label{display:inline-flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .step-label .roman{font-family:var(--italic-font);font-style:italic;font-size:32px;color:var(--accent);font-weight:400;line-height:1}
+  .step-label .name{font-family:var(--label-font);font-size:10.5px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase}
+  .headline{font-family:var(--display-font);font-size:54px;font-weight:500;color:var(--ink-deep);line-height:1.04;letter-spacing:-0.025em;margin-bottom:8px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .sub{font-family:var(--body-font);font-size:15px;color:var(--ink-secondary);font-style:italic;margin-bottom:38px;letter-spacing:0.005em}
+  .timeline{position:relative;margin-top:8px}
+  .timeline-line{position:absolute;left:0;right:0;top:54px;height:1px;background:linear-gradient(90deg, var(--accent) 0%, rgba(193,80,46,0.4) 80%, transparent 100%)}
+  .steps{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:30px}
+  .step-card{position:relative;padding-top:80px}
+  .step-card .num{position:absolute;top:0;left:0;width:54px;height:54px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--italic-font);font-style:italic;font-size:24px;color:var(--accent);background:var(--bg)}
+  .step-card .arrow{position:absolute;top:24px;left:64px;font-family:var(--italic-font);font-style:italic;font-size:18px;color:var(--accent);opacity:0.5}
+  .step-card h3{font-family:var(--display-font);font-size:20px;font-weight:600;color:var(--ink-deep);line-height:1.18;letter-spacing:-0.01em;margin-bottom:12px}
+  .step-card h3 em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .step-card p{font-family:var(--body-font);font-size:14px;line-height:1.62;color:var(--ink-secondary)}
+  .step-card .time{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);font-weight:500;letter-spacing:0.05em;margin-bottom:8px;display:block;text-transform:uppercase}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+</style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="frame-line-top"></div>
+  <div class="frame-line-bottom"></div>
+  <div class="masthead">
+    <div class="brand-meta"><span class="brand">Carbonara Journal</span><span>VOL. I</span></div>
+    <div class="brand-meta"><span>STEP IV</span><span>EMULSION</span><span>2026</span></div>
+  </div>
+  <div class="stage">
+    <div class="accent-rule"></div>
+    <div class="label">Where Carbonara is Born</div>
+    <div class="step-label"><span class="roman">iv.</span><span class="name">The Final Step</span></div>
+    <h1 class="headline">The Final <em>Emulsion</em></h1>
+    <p class="sub">Four movements, one perfect sauce. Everything must move in <em>six seconds</em>.</p>
+    <div class="timeline">
+      <div class="timeline-line"></div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="num">i</div>
+          <span class="time">+ 0 sec</span>
+          <h3>Sauté <em>Coat</em></h3>
+          <p>Transfer al dente pasta directly into the skillet with warm guanciale fat; toss to coat evenly.</p>
+        </div>
+        <div class="step-card">
+          <div class="num">ii</div>
+          <span class="time">+ 30 sec</span>
+          <h3>Off-Heat <em>Cool</em></h3>
+          <p>Let the skillet sit off the burner for 30 seconds. This is the moment that prevents scrambled eggs.</p>
+        </div>
+        <div class="step-card">
+          <div class="num">iii</div>
+          <span class="time">+ 60 sec</span>
+          <h3>Pour <em>Paste</em></h3>
+          <p>Pour the yolk-cheese pastella over the pasta, then throw in the crispy guanciale pieces.</p>
+        </div>
+        <div class="step-card">
+          <div class="num">iv</div>
+          <span class="time">+ 90 sec</span>
+          <h3>Rapid <em>Agitation</em></h3>
+          <p>Add a ladle of pasta water. Toss aggressively to create a creamy, silk-like golden emulsion.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="left-foot"><span class="glyph">C.J.</span><span>Step IV · Emulsion</span></div>
+  <div class="folio">§ 10</div>
+</body>
+</html>

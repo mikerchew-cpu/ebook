@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Section · The Cooking Process</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f3ebde; --ink-primary: #2a1810; --ink-deep: #1f1410; --ink-secondary: #4a3a30;
+    --ink-label: #8b5a3c; --accent: #c1502e; --rule: rgba(42,24,16,0.12);
+    --display-font: 'Source Serif 4', Georgia, serif;
+    --italic-font: 'Instrument Serif', 'Fraunces', Georgia, serif;
+    --body-font: 'Source Serif 4', Georgia, serif;
+    --label-font: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);color:var(--ink-primary);font-family:var(--body-font);position:relative;
+    font-feature-settings:'kern','liga','onum','ss01';text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  .paper-grain{position:absolute;inset:0;background-image:
+    radial-gradient(circle at 18% 22%, rgba(193,80,46,0.04) 0%, transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(139,90,60,0.05) 0%, transparent 42%);
+    pointer-events:none;z-index:1}
+  .frame-line-top{position:absolute;top:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .frame-line-bottom{position:absolute;bottom:36px;left:80px;right:80px;height:1px;background:var(--rule);z-index:2}
+  .masthead{position:absolute;top:50px;left:80px;right:80px;display:flex;justify-content:space-between;align-items:center;z-index:3;
+    font-family:var(--label-font);font-size:10.5px;color:var(--ink-secondary);letter-spacing:0.22em;text-transform:uppercase;font-weight:500}
+  .masthead .brand{font-family:var(--display-font);font-style:italic;font-size:15px;letter-spacing:0.01em;text-transform:none;color:var(--ink-primary);font-weight:400}
+  .stage{position:relative;width:100%;height:100%;padding:130px 80px 80px;z-index:2}
+  .accent-rule{width:24px;height:1.5px;background:var(--accent);margin-bottom:18px}
+  .label{font-family:var(--label-font);font-size:11px;color:var(--ink-label);font-weight:600;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:36px}
+  .part-num{font-family:var(--italic-font);font-style:italic;font-size:120px;font-weight:400;line-height:1;color:var(--accent);letter-spacing:-0.02em;margin-bottom:24px}
+  .headline{font-family:var(--display-font);font-size:84px;font-weight:500;color:var(--ink-deep);line-height:1.02;letter-spacing:-0.025em;max-width:900px;margin-bottom:32px}
+  .headline em{font-family:var(--italic-font);font-style:italic;font-weight:400;color:var(--accent)}
+  .essay{font-family:var(--body-font);font-size:18px;line-height:1.72;color:var(--ink-secondary);max-width:680px}
+  .essay em{font-family:var(--italic-font);font-style:italic;color:var(--accent);font-size:19px}
+  .step-row{margin-top:48px;display:flex;align-items:center;gap:0}
+  .step-mini{display:flex;align-items:center;gap:14px;font-family:var(--label-font);font-size:11px;color:var(--ink-label);letter-spacing:0.22em;text-transform:uppercase;font-weight:600}
+  .step-mini .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .step-mini .num{font-family:var(--display-font);font-style:italic;font-size:16px;color:var(--ink-primary);text-transform:none;letter-spacing:0;font-weight:500}
+  .step-mini .sep{width:34px;height:1px;background:var(--ink-secondary);opacity:0.4}
+  .left-foot{position:absolute;bottom:60px;left:80px;font-family:var(--label-font);font-size:10px;color:var(--ink-secondary);letter-spacing:0.28em;text-transform:uppercase;font-weight:500;opacity:0.7;z-index:3;display:flex;align-items:center;gap:12px}
+  .left-foot .glyph{font-family:var(--display-font);font-style:italic;font-size:13px;letter-spacing:0;color:var(--ink-label);text-transform:none;opacity:1}
+  .folio{position:absolute;bottom:60px;right:80px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-label);letter-spacing:0.08em;font-variant-numeric:tabular-nums;z-index:3}
+</style>
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <div class="frame-line-top"></div>
+  <div class="frame-line-bottom"></div>
+  <div class="masthead">
+    <div class="brand-meta"><span class="brand">Carbonara Journal</span><span>VOL. I</span></div>
+    <div class="brand-meta"><span>PART TWO</span><span>EXECUTION</span><span>2026</span></div>
+  </div>
+  <div class="stage">
+    <div class="accent-rule"></div>
+    <div class="label">Part II · The Process</div>
+    <div class="part-num">02</div>
+    <h1 class="headline">The <em>Cooking</em> Process</h1>
+    <p class="essay">A step-by-step masterclass on execution — transforming five basic elements into a flawless culinary masterpiece with <em>perfect texture</em>.</p>
+    <div class="step-row">
+      <div class="step-mini"><span class="dot"></span><span class="num">i.</span> Render</div>
+      <div class="step-mini"><span class="sep"></span></div>
+      <div class="step-mini"><span class="dot"></span><span class="num">ii.</span> Boil</div>
+      <div class="step-mini"><span class="sep"></span></div>
+      <div class="step-mini"><span class="dot"></span><span class="num">iii.</span> Whisk</div>
+      <div class="step-mini"><span class="sep"></span></div>
+      <div class="step-mini"><span class="dot"></span><span class="num">iv.</span> Emulsify</div>
+    </div>
+  </div>
+  <div class="left-foot"><span class="glyph">C.J.</span><span>Part II · The Process</span></div>
+  <div class="folio">§ 06</div>
+</body>
+</html>
